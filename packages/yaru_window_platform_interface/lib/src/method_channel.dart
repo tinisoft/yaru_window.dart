@@ -52,6 +52,11 @@ class YaruWindowMethodChannel extends YaruWindowPlatform {
   @override
   Future<void> setTitle(int id, String title) =>
       _invokeMethod('setTitle', [id, title]);
+
+  @override
+  Future<void> resize(int id, int width, int height) =>
+      _invokeMethod('resize', [id, width, height]);
+
   @override
   Future<void> setMinimizable(int id, bool minimizable) =>
       _invokeMethod('setMinimizable', [id, minimizable]);

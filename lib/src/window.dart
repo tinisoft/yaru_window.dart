@@ -133,6 +133,10 @@ class YaruWindow {
     await window.init();
     return window;
   }
+
+  static Future<void> resize(BuildContext context, int width, int height) {
+    return YaruWindow.of(context).resize(width, height);
+  }
 }
 
 /// A top-level window instance.
@@ -219,5 +223,9 @@ class YaruWindowInstance {
   /// Installs a close handler for the window.
   Future<void> onClose(FutureOr<bool> Function() handler) {
     return _platform.onClose(_id, handler);
+  }
+
+  Future<void> resize(int width, int height) {
+    return _platform.resize(_id, width, height);
   }
 }

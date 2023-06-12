@@ -178,6 +178,32 @@ static void yaru_window_linux_plugin_handle_method_call(
   } else if (strcmp(method, "setTitle") == 0) {
     FlValue* title = fl_value_get_list_value(args, 1);
     yaru_window_set_title(window, fl_value_get_string(title));
+  } else if(strcmp(method, "resize") == 0) {
+    GdkRectangle workarea = {0};
+    gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()), &workarea);
+
+    // workarea.width and workarea.height are the maximum size of the window
+    // conver the width and height to the maximum size of the window
+    int requestedWidth = fl_value_get_int(fl_value_get_list_value(args, 1));
+    int requestedHeight = fl_value_get_int(fl_value_get_list_value(args, 2));
+
+    int maxWidth = workarea.width;
+    int maxHeight = workarea.height;
+
+    double requestedAspectRatio = (double)requestedWidth / requestedHeight;
+    int constrainedWidth = requestedWidth, constrainedHeight = requestedHeight;
+
+    if (constrainedWidth > maxWidth) {
+        constrainedWidth = maxWidth;
+        constrainedHeight = (int)(constrainedWidth / requestedAspectRatio);
+    }
+
+    if (constrainedHeight > maxHeight) {
+        constrainedHeight = maxHeight;
+        constrainedWidth = (int)(constrainedHeight * requestedAspectRatio);
+    }
+
+    gtk_window_resize(window, constrainedWidth, constrainedHeight);
   } else {
     response = FL_METHOD_RESPONSE(fl_method_not_implemented_response_new());
   }
